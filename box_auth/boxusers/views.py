@@ -1,6 +1,6 @@
 from django.views.generic.base import RedirectView
 
-from boxsdk import OAuth2
+from boxsdk import RedisManagedOAuth2
 
 from box_auth.boxusers.models import BoxUser
 
@@ -26,26 +26,27 @@ class BoxAuth(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
 
-        oauth = OAuth2(
+        oauth = RedisManagedOAuth2(
             client_id='5dn98104cyf535v4581cbb1wxnag6e5y',
-            client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY',
-            store_tokens=store_tokens,
+            client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY'
         )
 
         auth_url, csrf_token = oauth.get_authorization_url(
             'https://enhatch-box-auth-demo.herokuapp.com/box/auth-confirm/')
-        self._store_csrf(csrf_token)
+        self._store_csrf(csrf_token, oauth.unique_id)
 
         return auth_url
 
-    def _store_csrf(self, csrf_token):
+    def _store_box_user(self, csrf_token, unique_id):
         count = BoxUser.objects.count()
         if count == 0:
             boxuser = BoxUser.objects.create(
-                csrf_token=csrf_token)
+                csrf_token=csrf_token,
+                unique_id=unique_id)
         else:
             boxuser = BoxUser.objects.filter()[0]
             boxuser.csrf_token = csrf_token
+            boxuser.unique_id = unique_id
             boxuser.save()
 
 
@@ -58,14 +59,20 @@ class BoxAuthConfirm(RedirectView):
         state = self.request.GET.get('state')
         code = self.request.GET.get('code')
 
-        oauth = OAuth2(
+        boxuser = BoxUser.objects.filter()[0]
+        csrf_token = boxuser.csrf_token
+        unique_id = boxuser.unique_id
+
+        oauth = RedisManagedOAuth2(
             client_id='5dn98104cyf535v4581cbb1wxnag6e5y',
-            client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY'
+            client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY',
+            unique_id=unique_id
         )
 
-        csrf_token = BoxUser.objects.filter()[0].csrf_token
         assert state == csrf_token
         access_token, refresh_token = oauth.authenticate(code)
-        store_tokens(access_token, refresh_token, clear_csrf=True)
+
+        # store_tokens(
+        #     oauth.unique_id, access_token, refresh_token)
 
         return '/'
