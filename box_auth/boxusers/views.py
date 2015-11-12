@@ -1,6 +1,6 @@
 from django.views.generic.base import RedirectView
 
-from boxsdk import RedisManagedOAuth2
+from boxsdk.auth.redis_managed_oauth2 import RedisManagedOAuth2
 
 from box_auth.boxusers.models import BoxUser
 
