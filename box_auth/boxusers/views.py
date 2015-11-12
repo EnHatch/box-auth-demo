@@ -118,6 +118,7 @@ class RedisManagedOAuth2(OAuth2):
         """
         Get the latest tokens from redis and store them.
         """
+        print self._redis_server
         self._access_token, self._refresh_token = self._redis_server.hvals(
             self._unique_id) or (None, None)
 
