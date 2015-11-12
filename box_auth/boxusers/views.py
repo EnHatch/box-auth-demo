@@ -41,7 +41,7 @@ class BoxAuth(RedirectView):
 
         auth_url, csrf_token = oauth.get_authorization_url(
             'https://enhatch-box-auth-demo.herokuapp.com/box/auth-confirm/')
-        self._store_csrf(csrf_token, oauth.unique_id)
+        self._store_box_user(csrf_token, oauth.unique_id)
 
         return auth_url
 
