@@ -6,3 +6,4 @@ from django.db import models
 class BoxUser(models.Model):
     access_token = models.TextField()
     refresh_token = models.TextField()
+    csrf_token = models.TextField()
