@@ -1,4 +1,5 @@
 from django.views.generic.base import RedirectView
+from django.middleware import csrf
 
 from boxsdk import OAuth2
 
@@ -20,6 +21,7 @@ class BoxAuth(RedirectView):
 
         auth_url, csrf_token = oauth.get_authorization_url(
             'https://enhatch-box-auth-demo.herokuapp.com/box/auth-confirm/')
+
         return auth_url
 
     def _store_tokens(self, access_token, refresh_token):
@@ -38,3 +40,17 @@ class BoxAuthConfirm(RedirectView):
 
     permanent = False
     query_string = True
+
+    def get_redirect_url(self, *args, **kwargs):
+        state = self.request.GET.get('state')
+        code = self.request.GET.get('code')
+
+        oauth = OAuth2(
+            client_id='5dn98104cyf535v4581cbb1wxnag6e5y',
+            client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY'
+        )
+
+        assert state == csrf.get_token()
+        access_token, refresh_token = oauth.authenticate(code)
+
+        return '/'
