@@ -98,7 +98,7 @@ USE_TZ = True
 
 
 # Parse database configuration from $DATABASE_URL
-DATABASES['default'] = dj_database_url.config()
+# DATABASES['default'] = dj_database_url.config()
 
 # Enable Connection Pooling (if desired)
 # DATABASES['default']['ENGINE'] = 'django_postgrespool'
@@ -125,7 +125,8 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # Redis
-redis_url = urlparse.urlparse(os.environ.get('REDIS_URL'))
+redis_url = urlparse.urlparse(
+    os.environ.get('REDIS_URL', 'http://127.0.0.1:6379'))
 CACHES = {
     "default": {
         "BACKEND": "redis_cache.RedisCache",
