@@ -39,11 +39,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'redis_cache',
+    'redis',
+
     'box_auth.boxusers',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -52,7 +54,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware'
 )
 
 ROOT_URLCONF = 'box_auth.urls'
@@ -128,7 +129,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # Redis
 redis_url = urlparse.urlparse(
-    os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1'))
+    os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/0'))
 print redis_url
 print "{0}:{1}".format(redis_url.hostname, redis_url.port)
 

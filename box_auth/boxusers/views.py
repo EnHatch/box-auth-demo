@@ -104,8 +104,14 @@ class RedisManagedOAuth2(OAuth2):
         :class:`Redis`
     """
     def __init__(self, unique_id=uuid4(), redis_server=None, *args, **kwargs):
+        import os
+        import urlparse
         self._unique_id = unique_id
-        self._redis_server = redis_server or StrictRedis()
+        redis_url = urlparse.urlparse(
+            os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/0'))
+        self._redis_server = redis_server or StrictRedis(
+            host=redis_url.hostname, port=redis_url.port,
+            password=redis_url.password, db=0)
         refresh_lock = Lock(
             redis=self._redis_server,
             name='{0}_lock'.format(self._unique_id))
