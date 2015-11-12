@@ -128,6 +128,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 redis_url = urlparse.urlparse(
     os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1'))
 print redis_url
+print "{0}:{1}".format(redis_url.hostname, redis_url.port)
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
