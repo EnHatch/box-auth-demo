@@ -5,6 +5,18 @@ from boxsdk import OAuth2
 from box_auth.boxusers.models import BoxUser
 
 
+def store_tokens(self, access_token, refresh_token):
+    count = BoxUser.objects.count()
+    if count == 0:
+        boxuser = BoxUser.objects.create(
+            access_token=access_token, refresh_token=refresh_token)
+    else:
+        boxuser = BoxUser.objects.filter()[0]
+        boxuser.access_token = access_token
+        boxuser.refresh_token = refresh_token
+        boxuser.save()
+
+
 class BoxAuth(RedirectView):
 
     permanent = False
@@ -15,7 +27,7 @@ class BoxAuth(RedirectView):
         oauth = OAuth2(
             client_id='5dn98104cyf535v4581cbb1wxnag6e5y',
             client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY',
-            store_tokens=self._store_tokens,
+            store_tokens=store_tokens,
         )
 
         auth_url, csrf_token = oauth.get_authorization_url(
@@ -32,17 +44,6 @@ class BoxAuth(RedirectView):
         else:
             boxuser = BoxUser.objects.filter()[0]
             boxuser.csrf_token = csrf_token
-            boxuser.save()
-
-    def _store_tokens(self, access_token, refresh_token):
-        count = BoxUser.objects.count()
-        if count == 0:
-            boxuser = BoxUser.objects.create(
-                access_token=access_token, refresh_token=refresh_token)
-        else:
-            boxuser = BoxUser.objects.filter()[0]
-            boxuser.access_token = access_token
-            boxuser.refresh_token = refresh_token
             boxuser.save()
 
 
@@ -63,5 +64,6 @@ class BoxAuthConfirm(RedirectView):
         csrf_token = BoxUser.objects.filter()[0].csrf_token
         assert state == csrf_token
         access_token, refresh_token = oauth.authenticate(code)
+        store_tokens(access_token, refresh_token)
 
         return '/'
