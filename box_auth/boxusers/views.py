@@ -5,7 +5,7 @@ from boxsdk import OAuth2
 from box_auth.boxusers.models import BoxUser
 
 
-def store_tokens(access_token, refresh_token):
+def store_tokens(access_token, refresh_token, clear_csrf=False):
     count = BoxUser.objects.count()
     if count == 0:
         boxuser = BoxUser.objects.create(
@@ -14,6 +14,8 @@ def store_tokens(access_token, refresh_token):
         boxuser = BoxUser.objects.filter()[0]
         boxuser.access_token = access_token
         boxuser.refresh_token = refresh_token
+        if clear_csrf:
+            boxuser.csrf_token = ''
         boxuser.save()
 
 
@@ -64,6 +66,6 @@ class BoxAuthConfirm(RedirectView):
         csrf_token = BoxUser.objects.filter()[0].csrf_token
         assert state == csrf_token
         access_token, refresh_token = oauth.authenticate(code)
-        store_tokens(access_token, refresh_token)
+        store_tokens(access_token, refresh_token, clear_csrf=True)
 
         return '/'
