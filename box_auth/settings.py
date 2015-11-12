@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'box_auth.boxusers',
+    # 'box_auth.boxusers',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -97,7 +97,7 @@ USE_TZ = True
 
 
 # Parse database configuration from $DATABASE_URL
-# DATABASES['default'] = dj_database_url.config()
+DATABASES['default'] = dj_database_url.config()
 
 # Enable Connection Pooling (if desired)
 # DATABASES['default']['ENGINE'] = 'django_postgrespool'
