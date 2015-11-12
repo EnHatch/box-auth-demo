@@ -50,7 +50,7 @@ class BoxAuthConfirm(RedirectView):
             client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY'
         )
 
-        assert state == csrf.get_token()
+        assert state == csrf.get_token(self.request)
         access_token, refresh_token = oauth.authenticate(code)
 
         return '/'
