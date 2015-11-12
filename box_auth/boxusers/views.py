@@ -5,7 +5,7 @@ from boxsdk import OAuth2
 from box_auth.boxusers.models import BoxUser
 
 
-def store_tokens(self, access_token, refresh_token):
+def store_tokens(access_token, refresh_token):
     count = BoxUser.objects.count()
     if count == 0:
         boxuser = BoxUser.objects.create(
