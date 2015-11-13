@@ -34,6 +34,25 @@ class HomeView(TemplateView):
             context['boxuser'] = me
             context['folder_items'] = folder_items
 
+            ####
+            otherbox = BoxUser.objects.exclude(id=boxuser.id)
+            context['others'] = []
+            for other in otherbox:
+                otherauth = RedisManagedOAuth2(
+                    client_id='5dn98104cyf535v4581cbb1wxnag6e5y',
+                    client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY',
+                    unique_id=other.unique_id
+                )
+                otherclient = Client(otherauth)
+                me = otherclient.user(user_id='me').get()
+                context['others'].add({
+                    'boxuser': me,
+                    'folder_items': (
+                        otherclient
+                        .folder(folder_id='0')
+                        .get_items(limit=100, offset=0))
+                })
+
         return context
 
 
