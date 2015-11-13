@@ -27,6 +27,7 @@ class HomeView(TemplateView):
             client = Client(oauth)
             me = client.user(user_id='me').get()
             kwargs['boxuser'] = me
+            print me
 
         super(HomeView, self).get_context_data(*args, **kwargs)
 
