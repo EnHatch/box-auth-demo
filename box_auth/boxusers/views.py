@@ -44,9 +44,9 @@ class HomeView(TemplateView):
                     unique_id=other.unique_id
                 )
                 otherclient = Client(otherauth)
-                me = otherclient.user(user_id='me').get()
+                otherme = otherclient.user(user_id='me').get()
                 context['others'].append({
-                    'boxuser': me,
+                    'boxuser': otherme,
                     'folder_items': (
                         otherclient
                         .folder(folder_id='0')
