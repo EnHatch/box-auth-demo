@@ -17,7 +17,7 @@ class HomeView(TemplateView):
     template_name = 'home.html'
 
     def get_context_data(self, *args, **kwargs):
-        if 'user' not in kwargs:
+        if 'boxuser' not in kwargs and BoxUser.objects.count():
             boxuser = BoxUser.objects.filter()[0]
             oauth = RedisManagedOAuth2(
                 client_id='5dn98104cyf535v4581cbb1wxnag6e5y',
@@ -26,7 +26,7 @@ class HomeView(TemplateView):
             )
             client = Client(oauth)
             me = client.user(user_id='me').get()
-            kwargs['user'] = me
+            kwargs['boxuser'] = me
 
         super(HomeView, self).get_context_data(*args, **kwargs)
 

@@ -11,7 +11,13 @@
 </head>
 
 <body>
-  <p>Hello, {{ user.name }}!</p>
+  <p>
+    {% if boxuser %}
+      Hello, {{ boxuser.name }}!
+    {% else %}
+      Hello! Please <a href="{% url 'box:auth' %}">login with Box</a>.
+    {% endif %}
+  </p>
 </body>
 
 </html> 
