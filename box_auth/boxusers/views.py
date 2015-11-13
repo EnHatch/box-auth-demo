@@ -80,7 +80,7 @@ class DownloadView(View):
             'attachment; filename="%s"' % file_name)
         content = BytesIO(client.file(file_id=first_item_id).content())
         file_content = content.getvalue()
-        file_content.close()
+        content.close()
         response.write(file_content)
         return response
 
