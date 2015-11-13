@@ -4,8 +4,7 @@ from redis.lock import Lock
 from uuid import uuid4
 from boxsdk import OAuth2, Client
 
-
-from django.views.generic.base import RedirectView, TemplateView
+from django.views.generic.base import View, RedirectView, TemplateView
 
 # from boxsdk import OAuth2
 # from boxsdk.auth.redis_managed_oauth2 import RedisManagedOAuth2
@@ -31,10 +30,6 @@ class HomeView(TemplateView):
             folder_items = (
                 client.folder(folder_id='0').get_items(limit=100, offset=0))
 
-            file_items = [f for f in folder_items if f.type == "file"]
-            first_item = file_items[0]
-            context['first_item'] = (
-                client.file(file_id=first_item.id).content())
             context['boxuser'] = me
             context['folder_items'] = folder_items
 
@@ -58,6 +53,36 @@ class HomeView(TemplateView):
                 })
 
         return context
+
+
+class DownloadView(View):
+
+    def get(self, request, *args, **kwargs):
+        from io import BytesIO
+        from django.http import HttpResponse
+
+        boxuser = BoxUser.objects.order_by('-id')[0]
+        oauth = RedisManagedOAuth2(
+            client_id='5dn98104cyf535v4581cbb1wxnag6e5y',
+            client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY',
+            unique_id=boxuser.unique_id
+        )
+        client = Client(oauth)
+        folder_items = (
+            client.folder(folder_id='0').get_items(limit=100, offset=0))
+        file_items = [f for f in folder_items if f.type == "file"]
+        first_item_id = file_items[0].id
+        file_name = client.file(file_id=first_item_id).get()['name']
+
+        # RESPONSE
+        response = HttpResponse(content_type='application/octet-stream')
+        response['Content-Disposition'] = (
+            'attachment; filename="%s"' % file_name)
+        content = BytesIO(client.file(file_id=first_item_id).content())
+        file_content = content.getvalue()
+        file_content.close()
+        response.write(file_content)
+        return response
 
 
 # def store_tokens(access_token, refresh_token, clear_csrf=False):
