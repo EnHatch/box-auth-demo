@@ -90,7 +90,7 @@ class BoxAuthConfirm(RedirectView):
         state = self.request.GET.get('state')
         code = self.request.GET.get('code')
 
-        boxuser = BoxUser.objects.filter()[0]
+        boxuser = BoxUser.objects.filter('-created')[0]
         csrf_token = boxuser.csrf_token
         unique_id = boxuser.unique_id
 
