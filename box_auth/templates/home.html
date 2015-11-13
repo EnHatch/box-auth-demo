@@ -26,6 +26,16 @@
       </li>
     {% endfor %}
   </ul>
+  {% for other in others %}
+    {{ other.boxuser.name }} Home Folder
+    <ul>
+      {% for item in other.folder_items %}
+        <li>
+          {{ item.type }}: {{ item.name }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
 </body>
 
 </html> 
