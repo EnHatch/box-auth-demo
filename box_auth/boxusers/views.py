@@ -134,7 +134,8 @@ class RedisManagedOAuth2(OAuth2):
             os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/0'))
         self._redis_server = redis_server or StrictRedis(
             host=redis_url.hostname, port=redis_url.port,
-            password=redis_url.password, db=0)
+            password=redis_url.password, db=0,
+            decode_responses=True)
         refresh_lock = Lock(
             redis=self._redis_server,
             name='{0}_lock'.format(self._unique_id))
