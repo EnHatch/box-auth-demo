@@ -61,7 +61,7 @@ ROOT_URLCONF = 'box_auth.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['box_auth/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

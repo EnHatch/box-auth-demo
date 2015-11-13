@@ -2,15 +2,33 @@ from __future__ import unicode_literals
 from redis import StrictRedis
 from redis.lock import Lock
 from uuid import uuid4
-from boxsdk import OAuth2
+from boxsdk import OAuth2, Client
 
 
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, TemplateView
 
 # from boxsdk import OAuth2
 # from boxsdk.auth.redis_managed_oauth2 import RedisManagedOAuth2
 
 from box_auth.boxusers.models import BoxUser
+
+
+class HomeView(TemplateView):
+    template_name = 'home.html'
+
+    def get_context_data(self, *args, **kwargs):
+        if 'user' not in kwargs:
+            boxuser = BoxUser.objects.filter()[0]
+            oauth = RedisManagedOAuth2(
+                client_id='5dn98104cyf535v4581cbb1wxnag6e5y',
+                client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY',
+                unique_id=boxuser.unique_id
+            )
+            client = Client(oauth)
+            me = client.user(user_id='me').get()
+            kwargs['user'] = me
+
+        super(HomeView, self).get_context_data(*args, **kwargs)
 
 
 def store_tokens(access_token, refresh_token, clear_csrf=False):
