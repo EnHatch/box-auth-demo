@@ -20,7 +20,7 @@ class HomeView(TemplateView):
         context = super(HomeView, self).get_context_data(**kwargs)
 
         if BoxUser.objects.count():
-            boxuser = BoxUser.objects.filter()[0]
+            boxuser = BoxUser.objects.order_by('-id')[0]
             oauth = RedisManagedOAuth2(
                 client_id='5dn98104cyf535v4581cbb1wxnag6e5y',
                 client_secret='8z6ysMEnsrickMWBwpnysxYJ9SvqaNlY',
