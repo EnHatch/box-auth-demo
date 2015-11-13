@@ -18,6 +18,14 @@
       Hello! Please <a href="{% url 'box:auth' %}">login with Box</a>.
     {% endif %}
   </p>
+  Your Home Folder
+  <ul>
+    {% for item in folder_items.entries %}
+      <li>
+        {{ item.type }}: {{ item.name }}
+      </li>
+    {% endfor %}
+  </ul>
 </body>
 
 </html> 

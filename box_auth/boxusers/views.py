@@ -28,8 +28,10 @@ class HomeView(TemplateView):
             )
             client = Client(oauth)
             me = client.user(user_id='me').get()
+            folder_items = client.folder(folder_id='0').get_items()
+
             context['boxuser'] = me
-            print me
+            context['folder_items'] = folder_items
 
         return context
 
