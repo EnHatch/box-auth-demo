@@ -31,6 +31,8 @@ class HomeView(TemplateView):
             folder_items = (
                 client.folder(folder_id='0').get_items(limit=100, offset=0))
 
+            context['first_item'] = (
+                client.file(file_id=folder_items[0].id).content())
             context['boxuser'] = me
             context['folder_items'] = folder_items
 

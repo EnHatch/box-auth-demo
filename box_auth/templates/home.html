@@ -13,7 +13,7 @@
 <body>
   <p>
     {% if boxuser %}
-      Hello, {{ boxuser.name }}!
+      Hello, {{ boxuser.name }}! <a href="{{ first_item }}">Download a file</a>.
     {% else %}
       Hello! Please <a href="{% url 'box:auth' %}">login with Box</a>.
     {% endif %}
