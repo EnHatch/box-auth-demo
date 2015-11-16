@@ -36,6 +36,26 @@
       {% endfor %}
     </ul>
   {% endfor %}
+
+  <div id="box-select" data-link-type="direct" data-multiselect="true" data-client-id="5dn98104cyf535v4581cbb1wxnag6e5y">
+    Select Box Files
+  </div>
+
+  <script type="text/javascript" src="https://app.box.com/js/static/select.js"></script> 
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var boxSelect = new BoxSelect();
+      // Register a success callback handler
+      boxSelect.success(function(response) {
+          console.log(response);
+      });
+      // Register a cancel callback handler
+      boxSelect.cancel(function() {
+          console.log("The user clicked cancel or closed the popup");
+      });
+    });
+  </script>
 </body>
 
 </html> 
